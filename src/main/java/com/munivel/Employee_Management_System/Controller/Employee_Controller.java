@@ -7,17 +7,31 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-//@RequestMapping("/")
+// @RequestMapping("/")
 public class Employee_Controller {
   @Autowired private Service service;
 
+  @PreAuthorize("hasRole('USER')")
+  @GetMapping("/user")
+  public String userEndPoint() {
+    return "hello ! user";
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/admin")
+  public String adminEndPoint() {
+    return "hello ! admin";
+  }
+
   @RequestMapping("/")
-  public String homs(){
+  public String homs() {
     return "hello";
   }
+
   @GetMapping("/home")
   public String home() {
     return "Welcome";
@@ -124,10 +138,33 @@ public class Employee_Controller {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
+
   @PutMapping("/update/{id}")
   public ResponseEntity<Employee> update(
       @PathVariable int id, @Valid @RequestBody Employee employee) {
     Employee e = service.update_employee(id, employee);
     return new ResponseEntity<>(e, HttpStatus.OK);
   }
+
+  // getting data by name
+  //  @GetMapping("/Byname/{name}")
+  //  public ResponseEntity<Employee> getbyname(@PathVariable String name) {
+  //    Optional<Employee> e = service.getbyname(name);
+  //    if (e.isPresent()) {
+  //      return new ResponseEntity<>(e.get(), HttpStatus.OK);
+  //      // e.get() is an actual object of an employee
+  //      // Optional.get()
+  //
+  //      // get() retrieves the value inside the Optional.
+  //      //
+  //      // If the Optional contains a value, it returns that value.
+  //      //
+  //      // If the Optional is empty, calling get() will throw NoSuchElementException.
+  //    }
+  //    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  //    //Returning new ResponseEntity<>(null, HttpStatus.NOT_FOUND) works, but in REST it’s better
+  // to avoid returning null in the body for 404.
+  //    //
+  //    //Just return ResponseEntity.notFound().build()
+  //  }
 }
