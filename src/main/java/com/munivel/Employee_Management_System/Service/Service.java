@@ -81,4 +81,9 @@ public class Service {
       throw new RuntimeException("Cannot able to updat" + id);
     }
   }
+
+  //  public Optional<Employee> getbyname(String name) {
+  //    Optional<Employee> e = repo.findByName(name);
+  //    return e;
+  //  }
 }
