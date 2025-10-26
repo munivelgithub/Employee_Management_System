@@ -2,7 +2,6 @@ package com.munivel.Employee_Management_System.Service;
 
 import com.munivel.Employee_Management_System.Model.Employee;
 import com.munivel.Employee_Management_System.Repository.Employee_Repo;
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +65,7 @@ public class Service {
     }
   }
 
-  public Employee update_employee(int id, @Valid Employee employee) {
+  public Employee update_employee(int id, Employee employee) {
     Optional<Employee> e = repo.findById(id);
     if (e.isPresent()) {
       Employee employee1 = e.get();
@@ -76,9 +75,9 @@ public class Service {
       employee1.setEmail(employee.getEmail());
       employee1.setPhone(employee.getPhone());
       employee1.setSalary(employee.getSalary());
-      return repo.save(employee);
+      return repo.save(employee1);
     } else {
-      throw new RuntimeException("Cannot able to updat" + id);
+      throw new RuntimeException("Cannot able to update" + id);
     }
   }
 

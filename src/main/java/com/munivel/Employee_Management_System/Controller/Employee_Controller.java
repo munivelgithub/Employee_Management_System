@@ -2,18 +2,29 @@ package com.munivel.Employee_Management_System.Controller;
 
 import com.munivel.Employee_Management_System.Model.Employee;
 import com.munivel.Employee_Management_System.Service.Service;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 // @RequestMapping("/")
 public class Employee_Controller {
   @Autowired private Service service;
+
+  // One Role	hasRole('ADMIN')	User must have the ADMIN role.
+  // Multiple Roles (OR)	hasAnyRole('ADMIN', 'USER')	User must have at least one of the listed
+  // roles. This is the simplest way to allow multiple roles.
+  // Multiple Roles (OR)	hasRole('ADMIN') or hasRole('USER')	Equivalent to hasAnyRole(). Useful when
+  // combining with other conditions.
+  // Multiple Roles (AND)	hasRole('ADMIN') and hasRole('MANAGER')	User must have ALL listed roles.
+  // Authority	hasAuthority('DELETE_PRIVILEGE')	Checks for a specific permission/authority, not
+  // necessarily a high-level role.
 
   @PreAuthorize("hasRole('USER')")
   @GetMapping("/user")
@@ -27,16 +38,19 @@ public class Employee_Controller {
     return "hello ! admin";
   }
 
+  @PreAuthorize("hasAnyRole('USER','ADMIN')")
   @RequestMapping("/")
   public String homs() {
     return "hello";
   }
 
+  @PreAuthorize("hasAnyRole('USER','ADMIN')")
   @GetMapping("/home")
   public String home() {
     return "Welcome";
   }
 
+  @PreAuthorize("hasAnyRole('ADMIN')")
   @GetMapping("/All_Details")
   public ResponseEntity<List<Employee>> all_list() {
     List<Employee> ls = service.alldetails();
@@ -120,6 +134,8 @@ public class Employee_Controller {
   // <T> = type parameter you define
   //
   // <T extends SomeClass> = type must extend a specific cla
+
+  @PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/Add")
   public ResponseEntity<Employee> Adding(@Valid @RequestBody Employee employee) {
     Employee employees = service.add_Employee(employee);
@@ -129,6 +145,7 @@ public class Employee_Controller {
     return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
   }
 
+  @PreAuthorize("hasRole('ADMIN')")
   @DeleteMapping("/Delete/{id}")
   public ResponseEntity<?> delete(@PathVariable int id) {
     try {
@@ -139,6 +156,7 @@ public class Employee_Controller {
     }
   }
 
+  @PreAuthorize("hasRole('ADMIN')")
   @PutMapping("/update/{id}")
   public ResponseEntity<Employee> update(
       @PathVariable int id, @Valid @RequestBody Employee employee) {
@@ -167,4 +185,10 @@ public class Employee_Controller {
   //    //
   //    //Just return ResponseEntity.notFound().build()
   //  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/csrf")
+  public CsrfToken token(HttpServletRequest request) {
+    return (CsrfToken) request.getAttribute("_csrf");
+  }
 }
