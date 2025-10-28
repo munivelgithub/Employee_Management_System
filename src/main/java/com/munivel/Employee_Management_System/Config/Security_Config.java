@@ -41,7 +41,6 @@ public class Security_Config {
   public UserDetailsService userDetailsService() {
     //    UserDetails user1 =
     //        User.withUsername("user").roles("USER").password("{noop}Munivel@123").build();
-
     UserDetails user =
         User.withUsername("Sathaiyan")
             .roles("USER")
