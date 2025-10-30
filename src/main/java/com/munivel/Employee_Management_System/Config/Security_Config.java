@@ -60,7 +60,7 @@ public class Security_Config {
     // bu the jdbc user details manager is used to create an user in the database
 
     JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
-    //userDetailsManager.createUser(user1);
+    // userDetailsManager.createUser(user1);
     //    userDetailsManager.createUser(admin);
 
     return userDetailsManager;
@@ -75,3 +75,16 @@ public class Security_Config {
     return new BCryptPasswordEncoder();
   }
 }
+/*
+* @Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+        .csrf().disable()
+        .authorizeHttpRequests()
+        .requestMatchers("/api/public").permitAll()     // anyone can access
+        .requestMatchers("/api/private").authenticated() // must be logged in
+        .and()
+        .exceptionHandling()
+        .authenticationEntryPoint(authEntryPointJwt);    // your class here
+}
+*/
